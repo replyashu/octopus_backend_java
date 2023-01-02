@@ -1,6 +1,7 @@
 package com.ashu.octopus.entity;
 
 import jakarta.persistence.*;
+import org.aspectj.weaver.patterns.Declare;
 
 @Entity
 @Table(name = "dish")
@@ -14,11 +15,11 @@ public class Dish {
 
     private String dishUrl;
 
-    private String dishtype;
+    private String dishType;
 
     private String dishDescription;
 
-    private String dishRating;
+    private double dishRating;
 
     public Long getDishId() {
         return dishId;
@@ -44,12 +45,12 @@ public class Dish {
         this.dishUrl = dishUrl;
     }
 
-    public String getDishtype() {
-        return dishtype;
+    public String getDishType() {
+        return dishType;
     }
 
-    public void setDishtype(String dishtype) {
-        this.dishtype = dishtype;
+    public void setDishType(String dishType) {
+        this.dishType = dishType;
     }
 
     public String getDishDescription() {
@@ -60,19 +61,19 @@ public class Dish {
         this.dishDescription = dishDescription;
     }
 
-    public String getDishRating() {
+    public double getDishRating() {
         return dishRating;
     }
 
-    public void setDishRating(String dishRating) {
+    public void setDishRating(double dishRating) {
         this.dishRating = dishRating;
     }
 
-    public Dish(Long dishId, String dishName, String dishUrl, String dishtype, String dishDescription, String dishRating) {
+    public Dish(Long dishId, String dishName, String dishUrl, String dishType, String dishDescription, double dishRating) {
         this.dishId = dishId;
         this.dishName = dishName;
         this.dishUrl = dishUrl;
-        this.dishtype = dishtype;
+        this.dishType = dishType;
         this.dishDescription = dishDescription;
         this.dishRating = dishRating;
     }
@@ -86,7 +87,7 @@ public class Dish {
                 "dishId=" + dishId +
                 ", dishName='" + dishName + '\'' +
                 ", dishUrl='" + dishUrl + '\'' +
-                ", dishtype='" + dishtype + '\'' +
+                ", dishtype='" + dishType + '\'' +
                 ", dishDescription='" + dishDescription + '\'' +
                 ", dishRating='" + dishRating + '\'' +
                 '}';

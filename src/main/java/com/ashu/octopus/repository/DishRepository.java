@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface DishRepository extends JpaRepository<Dish, Long> {
 
     public Dish findByDishNameIgnoreCase(String dishName);
-
-//    public Dish fetchDishList();
 }
