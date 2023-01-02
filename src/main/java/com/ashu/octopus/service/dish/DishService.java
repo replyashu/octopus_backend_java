@@ -1,4 +1,4 @@
-package com.ashu.octopus.service;
+package com.ashu.octopus.service.dish;
 
 import com.ashu.octopus.entity.Dish;
 

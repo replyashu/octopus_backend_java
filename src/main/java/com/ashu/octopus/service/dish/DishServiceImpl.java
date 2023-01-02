@@ -1,8 +1,9 @@
-package com.ashu.octopus.service;
+package com.ashu.octopus.service.dish;
 
 import com.ashu.octopus.entity.Dish;
 import com.ashu.octopus.repository.DishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<Dish> fetchDishes() {
-        return dishRepository.findAll();
+        return dishRepository.findAll(Sort.by(Sort.Direction.ASC, "dishId"));
     }
 
     @Override

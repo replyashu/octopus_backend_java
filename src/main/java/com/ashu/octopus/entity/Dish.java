@@ -3,6 +3,8 @@ package com.ashu.octopus.entity;
 import jakarta.persistence.*;
 import org.aspectj.weaver.patterns.Declare;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "dish")
 public class Dish {
@@ -20,6 +22,17 @@ public class Dish {
     private String dishDescription;
 
     private double dishRating;
+
+    @ManyToMany(mappedBy = "favoriteDishes")
+    private Set<User> users;
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 
     public Long getDishId() {
         return dishId;
