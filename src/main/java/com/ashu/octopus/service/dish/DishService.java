@@ -20,5 +20,6 @@ public interface DishService {
 
     public List<Dish> fetchFavorites();
 
+
 //    public List<Dish> fetchDishList();
 }
