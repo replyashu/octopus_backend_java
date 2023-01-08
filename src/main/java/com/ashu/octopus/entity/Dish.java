@@ -21,7 +21,9 @@ public class Dish {
 
     private String dishDescription;
 
-    private double dishRating;
+    private double dishRating = 0;
+
+    private Long totalRatings = 0l;
 
     @ManyToMany(mappedBy = "favoriteDishes")
     private Set<User> users;
@@ -82,13 +84,22 @@ public class Dish {
         this.dishRating = dishRating;
     }
 
-    public Dish(Long dishId, String dishName, String dishUrl, String dishType, String dishDescription, double dishRating) {
+    public Long getTotalRatings() {
+        return totalRatings;
+    }
+
+    public void setTotalRatings(Long totalRatings) {
+        this.totalRatings = totalRatings;
+    }
+
+    public Dish(Long dishId, String dishName, String dishUrl, String dishType, String dishDescription, double dishRating, Long totalRatings) {
         this.dishId = dishId;
         this.dishName = dishName;
         this.dishUrl = dishUrl;
         this.dishType = dishType;
         this.dishDescription = dishDescription;
         this.dishRating = dishRating;
+        this.totalRatings = totalRatings;
     }
 
     public Dish() {
@@ -103,6 +114,7 @@ public class Dish {
                 ", dishtype='" + dishType + '\'' +
                 ", dishDescription='" + dishDescription + '\'' +
                 ", dishRating='" + dishRating + '\'' +
+                ", dishTotalRating='" + totalRatings + '\'' +
                 '}';
     }
 }
