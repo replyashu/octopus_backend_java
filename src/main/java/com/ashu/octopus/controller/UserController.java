@@ -50,7 +50,7 @@ public class UserController {
         }
 
         UUID uuid = UUID.randomUUID();
-        user.setUser_id(uuid.toString());
+        user.setUserId(uuid.toString());
         HttpStatus status = HttpStatus.OK;
 
         if (checkForUniqueEmail(user.getEmail())) {
@@ -60,6 +60,7 @@ public class UserController {
         }
 
         RegistrationResponse response = new RegistrationResponse();
+        response.setUserUid(user.getUserId());
         response.setEmail(user.getEmail());
         response.setName(user.getName());
         response.setProfilePhoto(user.getImageUrl());
@@ -79,5 +80,7 @@ public class UserController {
 
         return users.size() == 0;
     }
+
+
 
 }
