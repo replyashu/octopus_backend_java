@@ -25,6 +25,8 @@ public class Dish {
 
     private Long totalRatings = 0l;
 
+    private boolean isApproved = false;
+
     @ManyToMany(mappedBy = "favoriteDishes")
     private Set<User> users;
 
@@ -92,7 +94,15 @@ public class Dish {
         this.totalRatings = totalRatings;
     }
 
-    public Dish(Long dishId, String dishName, String dishUrl, String dishType, String dishDescription, double dishRating, Long totalRatings) {
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(boolean approved) {
+        isApproved = approved;
+    }
+
+    public Dish(Long dishId, String dishName, String dishUrl, String dishType, String dishDescription, double dishRating, Long totalRatings, boolean isApproved, Set<User> users) {
         this.dishId = dishId;
         this.dishName = dishName;
         this.dishUrl = dishUrl;
@@ -100,6 +110,8 @@ public class Dish {
         this.dishDescription = dishDescription;
         this.dishRating = dishRating;
         this.totalRatings = totalRatings;
+        this.isApproved = isApproved;
+        this.users = users;
     }
 
     public Dish() {
@@ -111,10 +123,12 @@ public class Dish {
                 "dishId=" + dishId +
                 ", dishName='" + dishName + '\'' +
                 ", dishUrl='" + dishUrl + '\'' +
-                ", dishtype='" + dishType + '\'' +
+                ", dishType='" + dishType + '\'' +
                 ", dishDescription='" + dishDescription + '\'' +
-                ", dishRating='" + dishRating + '\'' +
-                ", dishTotalRating='" + totalRatings + '\'' +
+                ", dishRating=" + dishRating +
+                ", totalRatings=" + totalRatings +
+                ", isApproved=" + isApproved +
+                ", users=" + users +
                 '}';
     }
 }

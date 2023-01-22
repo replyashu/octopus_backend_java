@@ -1,4 +1,4 @@
-package com.ashu.octopus.models;
+package com.ashu.octopus.models.dish;
 
 public class RateDishRequest {
 
