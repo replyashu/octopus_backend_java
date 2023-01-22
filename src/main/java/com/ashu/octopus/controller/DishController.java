@@ -1,8 +1,8 @@
 package com.ashu.octopus.controller;
 
 import com.ashu.octopus.entity.Dish;
-import com.ashu.octopus.models.RateDishRequest;
-import com.ashu.octopus.models.RateDishResponse;
+import com.ashu.octopus.models.dish.RateDishRequest;
+import com.ashu.octopus.models.dish.RateDishResponse;
 import com.ashu.octopus.service.dish.DishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -9,8 +9,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long user_id;
+    private String user_id;
 
     private String name;
 
@@ -19,6 +18,12 @@ public class User {
     private String imageUrl;
 
     private String email;
+
+    private boolean isSubscribed;
+
+    private String modeOfRegister;
+
+    private boolean isGuestUser;
 
     @ManyToMany
     @JoinTable(
@@ -29,11 +34,11 @@ public class User {
     )
     private Set<Dish> favoriteDishes;
 
-    public long getUser_id() {
+    public String getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(long user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 
@@ -77,12 +82,40 @@ public class User {
         this.favoriteDishes = favoriteDishes;
     }
 
-    public User(long user_id, String name, String user_phone, String imageUrl, String email, Set<Dish> favoriteDishes) {
+    public boolean isSubscribed() {
+        return isSubscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        isSubscribed = subscribed;
+    }
+
+    public String getModeOfRegister() {
+        return modeOfRegister;
+    }
+
+    public void setModeOfRegister(String modeOfRegister) {
+        this.modeOfRegister = modeOfRegister;
+    }
+
+    public boolean isGuestUser() {
+        return isGuestUser;
+    }
+
+    public void setGuestUser(boolean guestUser) {
+        isGuestUser = guestUser;
+    }
+
+    public User(String user_id, String name, String user_phone, String imageUrl, String email, boolean isSubscribed,
+                String modeOfRegister, boolean isGuestUser, Set<Dish> favoriteDishes) {
         this.user_id = user_id;
         this.name = name;
         this.user_phone = user_phone;
         this.imageUrl = imageUrl;
         this.email = email;
+        this.isSubscribed = isSubscribed;
+        this.modeOfRegister = modeOfRegister;
+        this.isGuestUser = isGuestUser;
         this.favoriteDishes = favoriteDishes;
     }
 
@@ -93,11 +126,14 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "user_id=" + user_id +
+                "user_id='" + user_id + '\'' +
                 ", name='" + name + '\'' +
                 ", user_phone='" + user_phone + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", email='" + email + '\'' +
+                ", isSubscribed=" + isSubscribed +
+                ", modeOfRegister='" + modeOfRegister + '\'' +
+                ", isGuestUser=" + isGuestUser +
                 ", favoriteDishes=" + favoriteDishes +
                 '}';
     }
