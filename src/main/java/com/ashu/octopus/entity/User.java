@@ -9,7 +9,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    private String user_id;
+    private String userId;
 
     private String name;
 
@@ -25,21 +25,21 @@ public class User {
 
     private boolean isGuestUser;
 
-    @ManyToMany
+    @OneToMany
     @JoinTable(
             name = "favorite_dish",
-            joinColumns = @JoinColumn(name = "user_id"),
+            joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "dishId")
 
     )
     private Set<Dish> favoriteDishes;
 
-    public String getUser_id() {
-        return user_id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUserId(String user_id) {
+        this.userId = user_id;
     }
 
     public String getName() {
@@ -106,9 +106,9 @@ public class User {
         isGuestUser = guestUser;
     }
 
-    public User(String user_id, String name, String user_phone, String imageUrl, String email, boolean isSubscribed,
-                String modeOfRegister, boolean isGuestUser, Set<Dish> favoriteDishes) {
-        this.user_id = user_id;
+    public User(String userId, String name, String user_phone, String imageUrl, String email,
+                boolean isSubscribed, String modeOfRegister, boolean isGuestUser, Set<Dish> favoriteDishes) {
+        this.userId = userId;
         this.name = name;
         this.user_phone = user_phone;
         this.imageUrl = imageUrl;
@@ -126,7 +126,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "user_id='" + user_id + '\'' +
+                "userId='" + userId + '\'' +
                 ", name='" + name + '\'' +
                 ", user_phone='" + user_phone + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
