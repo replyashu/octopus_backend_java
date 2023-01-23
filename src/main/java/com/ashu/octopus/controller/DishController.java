@@ -1,21 +1,29 @@
 package com.ashu.octopus.controller;
 
 import com.ashu.octopus.entity.Dish;
+import com.ashu.octopus.entity.User;
+import com.ashu.octopus.models.dish.MarkAsFavoriteRequest;
 import com.ashu.octopus.models.dish.RateDishRequest;
 import com.ashu.octopus.models.dish.RateDishResponse;
 import com.ashu.octopus.service.dish.DishService;
+import com.ashu.octopus.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class DishController {
 
     @Autowired
     private DishService dishService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/dish")
     public ResponseEntity<List<Dish>> fetchDishList() {
@@ -56,6 +64,39 @@ public class DishController {
         dishService.saveDish(dish);
         RateDishResponse response = new RateDishResponse(totalRatings, dishRating);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/dish/mark_favorite")
+    public ResponseEntity<Boolean> markAsFavorite(@RequestBody MarkAsFavoriteRequest markAsFavoriteRequest) {
+        User user = userService.findByUserId(markAsFavoriteRequest.getUserUuid());
+        Set<Dish> favoriteDishes = user.getFavoriteDishes();
+        if (favoriteDishes == null || favoriteDishes.size() == 0) {
+            favoriteDishes = new HashSet<>();
+        }
+        List<Dish> dish = dishService.fetchDishes();
+
+        System.out.println(dish.size());
+        System.out.println(markAsFavoriteRequest.getPosition());
+
+        favoriteDishes.add(dish.get(markAsFavoriteRequest.position));
+        user.setFavoriteDishes(favoriteDishes);
+
+        if (user.getUserId() != null) {
+            userService.saveUser(user);
+        }
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping("/dish/get_favorite")
+    public ResponseEntity<Set<Dish>> getFavoriteDish(@RequestBody String userId) {
+        User user = userService.findByUserId(userId);
+        Set<Dish> dishes = user.getFavoriteDishes();
+
+        if (dishes == null || dishes.size() == 0) {
+            dishes = new HashSet<>();
+        }
+        return new ResponseEntity<>(dishes, HttpStatus.OK);
     }
 
 }

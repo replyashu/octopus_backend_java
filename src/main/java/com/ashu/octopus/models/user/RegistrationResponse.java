@@ -2,6 +2,7 @@ package com.ashu.octopus.models.user;
 
 public class RegistrationResponse {
 
+    public String userUid;
     public String name;
 
     public String email;
@@ -9,6 +10,14 @@ public class RegistrationResponse {
     public String phoneNumber;
 
     public String profilePhoto;
+
+    public String getUserUid() {
+        return userUid;
+    }
+
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
+    }
 
     public String getName() {
         return name;
@@ -45,7 +54,8 @@ public class RegistrationResponse {
     public RegistrationResponse() {
     }
 
-    public RegistrationResponse(String name, String email, String phoneNumber, String profilePhoto) {
+    public RegistrationResponse(String userUid, String name, String email, String phoneNumber, String profilePhoto) {
+        this.userUid = userUid;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -55,7 +65,8 @@ public class RegistrationResponse {
     @Override
     public String toString() {
         return "RegistrationResponse{" +
-                "name='" + name + '\'' +
+                "userUid='" + userUid + '\'' +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", profilePhoto='" + profilePhoto + '\'' +

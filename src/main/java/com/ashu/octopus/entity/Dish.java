@@ -27,15 +27,15 @@ public class Dish {
 
     private boolean isApproved = false;
 
-    @ManyToMany(mappedBy = "favoriteDishes")
-    private Set<User> users;
+    @ManyToOne
+    private User user;
 
-    public Set<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getDishId() {
@@ -102,7 +102,7 @@ public class Dish {
         isApproved = approved;
     }
 
-    public Dish(Long dishId, String dishName, String dishUrl, String dishType, String dishDescription, double dishRating, Long totalRatings, boolean isApproved, Set<User> users) {
+    public Dish(Long dishId, String dishName, String dishUrl, String dishType, String dishDescription, double dishRating, Long totalRatings, boolean isApproved, User users) {
         this.dishId = dishId;
         this.dishName = dishName;
         this.dishUrl = dishUrl;
@@ -111,7 +111,7 @@ public class Dish {
         this.dishRating = dishRating;
         this.totalRatings = totalRatings;
         this.isApproved = isApproved;
-        this.users = users;
+        this.user = users;
     }
 
     public Dish() {
@@ -128,7 +128,7 @@ public class Dish {
                 ", dishRating=" + dishRating +
                 ", totalRatings=" + totalRatings +
                 ", isApproved=" + isApproved +
-                ", users=" + users +
+                ", users=" + user +
                 '}';
     }
 }
