@@ -70,16 +70,33 @@ public class DishController {
     public ResponseEntity<Boolean> markAsFavorite(@RequestBody MarkAsFavoriteRequest markAsFavoriteRequest) {
         User user = userService.findByUserId(markAsFavoriteRequest.getUserUuid());
         Set<Dish> favoriteDishes = user.getFavoriteDishes();
-        if (favoriteDishes.size() == 0) {
+        if (favoriteDishes == null || favoriteDishes.size() == 0) {
             favoriteDishes = new HashSet<>();
         }
         List<Dish> dish = dishService.fetchDishes();
 
+        System.out.println(dish.size());
+        System.out.println(markAsFavoriteRequest.getPosition());
+
         favoriteDishes.add(dish.get(markAsFavoriteRequest.position));
         user.setFavoriteDishes(favoriteDishes);
 
-        userService.saveUser(user);
+        if (user.getUserId() != null) {
+            userService.saveUser(user);
+        }
 
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
+
+    @GetMapping("/dish/get_favorite")
+    public ResponseEntity<Set<Dish>> getFavoriteDish(@RequestBody String userId) {
+        User user = userService.findByUserId(userId);
+        Set<Dish> dishes = user.getFavoriteDishes();
+
+        if (dishes == null || dishes.size() == 0) {
+            dishes = new HashSet<>();
+        }
+        return new ResponseEntity<>(dishes, HttpStatus.OK);
+    }
+
 }
