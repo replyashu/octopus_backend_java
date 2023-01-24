@@ -1,5 +1,7 @@
 package com.ashu.octopus.controller;
 
+import com.ashu.octopus.data.Note;
+import com.ashu.octopus.data.NoteWithToken;
 import com.ashu.octopus.entity.User;
 import com.ashu.octopus.models.user.RegisterUserRequest;
 import com.ashu.octopus.models.user.RegistrationResponse;
@@ -13,23 +15,26 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Base64;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationController notificationController;
 
     @PostMapping("/user/save")
     public ResponseEntity<RegistrationResponse> registerUser(@Autowired NetHttpTransport transport, @Autowired GsonFactory factory, @RequestBody RegisterUserRequest registerUserRequest) {
@@ -124,6 +129,47 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(false, HttpStatus.EXPECTATION_FAILED);
         }
+    }
+
+    @PostMapping("/user/notify")
+    @ResponseBody
+    public Boolean sendNotificationToAll() throws FirebaseMessagingException {
+        List<User> users = userService.findAllUsers();
+
+        for (User user: users) {
+            if (user.getNotificationToken() != null) {
+                System.out.println("notewa" + user.getNotificationToken());
+                sendNotificationToUser(user.getNotificationToken());
+            }
+        }
+
+        return true;
+    }
+
+    public void sendNotification(List<String> tokens) throws FirebaseMessagingException {
+       for (String token : tokens) {
+           this.sendNotificationToUser(token);
+       }
+    }
+
+    @PostMapping("/send-multi-notification")
+    @ResponseBody
+    public String sendNotificationToUser(String token) throws FirebaseMessagingException {
+        Note note = new Note();
+        note.setSubject("First Push Notification");
+        note.setContent("Random Content");
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("key1", "Value a");
+        data.put("key2", "Value b");
+        data.put("key3", "Value c");
+        note.setData(data);
+        note.setImage("https://somedomain.com/example.jpg");
+        NoteWithToken noteWithToken = new NoteWithToken();
+        noteWithToken.setToken(token);
+        noteWithToken.setNote(note);
+
+        System.out.println("notewa" + noteWithToken.toString());
+        return notificationController.sendNotification(noteWithToken);
     }
 
 }
