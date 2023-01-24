@@ -1,4 +1,4 @@
-package com.ashu.octopus.beans;
+package com.ashu.octopus.bean;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -11,7 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 
 @Configuration
-public class BeanConfiguration {
+public class BeanConfig {
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
@@ -21,7 +21,7 @@ public class BeanConfiguration {
                 .builder()
                 .setCredentials(googleCredentials)
                 .build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "my-app");
+        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "Octopus");
         return FirebaseMessaging.getInstance(app);
     }
 }
