@@ -15,8 +15,10 @@ public class FirebaseMessagingService {
         this.firebaseMessaging = firebaseMessaging;
     }
 
+
     public String sendNotification(Note note, String token) throws FirebaseMessagingException {
 
+        System.out.println("notewa   " + note.toString());
         Notification notification = Notification
                 .builder()
                 .setTitle(note.getSubject())
@@ -32,4 +34,5 @@ public class FirebaseMessagingService {
 
         return firebaseMessaging.send(message);
     }
+
 }

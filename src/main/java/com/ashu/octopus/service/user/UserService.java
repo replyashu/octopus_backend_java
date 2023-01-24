@@ -14,4 +14,6 @@ public interface UserService {
 
     public User findByUserId(String uuid);
 
+    public List<User> findAllUsers();
+
 }
