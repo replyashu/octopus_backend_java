@@ -3,8 +3,16 @@ package com.ashu.octopus.controller;
 import com.ashu.octopus.entity.User;
 import com.ashu.octopus.models.user.RegisterUserRequest;
 import com.ashu.octopus.models.user.RegistrationResponse;
+import com.ashu.octopus.models.user.TokenRequest;
 import com.ashu.octopus.service.user.UserService;
+import com.ashu.octopus.utility.Constants;
 import com.ashu.octopus.utility.GoogleUserToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Base64;
-import java.util.List;
+import java.util.Collections;
 import java.util.UUID;
 
 @RestController
@@ -24,13 +32,31 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/user/save")
-    public ResponseEntity<RegistrationResponse> registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
+    public ResponseEntity<RegistrationResponse> registerUser(@Autowired NetHttpTransport transport, @Autowired GsonFactory factory, @RequestBody RegisterUserRequest registerUserRequest) {
 
         String token = registerUserRequest.getToken();
 
         // Deserialize token
         String[] chunks = token.split("\\.");
         Base64.Decoder decoder = Base64.getUrlDecoder();
+
+        // validate token
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, factory)
+                .setAudience(Collections.singletonList(Constants.API_CLIENT_KEY))
+                // Or, if multiple clients access the backend:
+                //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+                .build();
+
+        JsonFactory jsonFactory = new JacksonFactory();
+//        try {
+//            GoogleIdToken googleIdToken = GoogleIdToken.parse(jsonFactory, token);
+//
+//            if (!verifier.verify(googleIdToken)) {
+//                return new ResponseEntity<>(new RegistrationResponse(), HttpStatus.UNAUTHORIZED);
+//            }
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(new RegistrationResponse(), HttpStatus.BAD_REQUEST);
+//        }
 
         String header = new String(decoder.decode(chunks[0]));
         String payload = new String(decoder.decode(chunks[1]));
@@ -46,7 +72,7 @@ public class UserController {
         user.setImageUrl(userToken.getPicture());
 
         if (userToken.getAud().contains("google")) {
-            user.setModeOfRegister("google_sign_in");
+            user.setMediumOfRegistration("google_android");
         }
 
         UUID uuid = UUID.randomUUID();
@@ -56,15 +82,17 @@ public class UserController {
         if (checkForUniqueEmail(user.getEmail())) {
             userService.saveUser(user);
         } else {
+            user = userService.findUserByEmail(user.getEmail());
             status = HttpStatus.ALREADY_REPORTED;
         }
 
+        System.out.println(user);
         RegistrationResponse response = new RegistrationResponse();
         response.setUserUid(user.getUserId());
         response.setEmail(user.getEmail());
         response.setName(user.getName());
         response.setProfilePhoto(user.getImageUrl());
-        response.setPhoneNumber(user.getUser_phone());
+        response.setPhoneNumber(user.getUserPhone());
 
         return new ResponseEntity<>(response, status);
     }
@@ -74,13 +102,28 @@ public class UserController {
             return true;
         }
 
-        List<User> users = userService.findUserByEmail(email);
+        User user = userService.findUserByEmail(email);
 
-        System.out.println("Users found with email:" + email + users.size());
-
-        return users.size() == 0;
+        return user == null;
     }
 
+    @PostMapping("/user/enable-push")
+    public ResponseEntity<Boolean> saveNotificationToken(@RequestBody TokenRequest tokenRequest) {
+        String userId = tokenRequest.getUserId();
 
+        User user = userService.findByUserId(userId);
+
+        System.out.println(tokenRequest.getUserId());
+
+        user.setNotificationToken(tokenRequest.getToken());
+
+        try {
+            userService.saveUser(user);
+            System.out.println(user);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
 }
