@@ -13,7 +13,7 @@ public class User {
 
     private String name;
 
-    private String user_phone;
+    private String userPhone;
 
     private String imageUrl;
 
@@ -21,9 +21,11 @@ public class User {
 
     private boolean isSubscribed;
 
-    private String modeOfRegister;
+    private String mediumOfRegistration;
 
     private boolean isGuestUser;
+
+    private String notificationToken;
 
     @OneToMany
     @JoinTable(
@@ -50,12 +52,12 @@ public class User {
         this.name = name;
     }
 
-    public String getUser_phone() {
-        return user_phone;
+    public String getUserPhone() {
+        return userPhone;
     }
 
-    public void setUser_phone(String user_phone) {
-        this.user_phone = user_phone;
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
     }
 
     public String getImageUrl() {
@@ -90,12 +92,12 @@ public class User {
         isSubscribed = subscribed;
     }
 
-    public String getModeOfRegister() {
-        return modeOfRegister;
+    public String getMediumOfRegistration() {
+        return mediumOfRegistration;
     }
 
-    public void setModeOfRegister(String modeOfRegister) {
-        this.modeOfRegister = modeOfRegister;
+    public void setMediumOfRegistration(String mediumOfRegistration) {
+        this.mediumOfRegistration = mediumOfRegistration;
     }
 
     public boolean isGuestUser() {
@@ -106,16 +108,26 @@ public class User {
         isGuestUser = guestUser;
     }
 
-    public User(String userId, String name, String user_phone, String imageUrl, String email,
-                boolean isSubscribed, String modeOfRegister, boolean isGuestUser, Set<Dish> favoriteDishes) {
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
+    }
+
+    public User(String userId, String name, String userPhone, String imageUrl, String email,
+                boolean isSubscribed, String mediumOfRegistration, boolean isGuestUser,
+                String notificationToken, Set<Dish> favoriteDishes) {
         this.userId = userId;
         this.name = name;
-        this.user_phone = user_phone;
+        this.userPhone = userPhone;
         this.imageUrl = imageUrl;
         this.email = email;
         this.isSubscribed = isSubscribed;
-        this.modeOfRegister = modeOfRegister;
+        this.mediumOfRegistration = mediumOfRegistration;
         this.isGuestUser = isGuestUser;
+        this.notificationToken = notificationToken;
         this.favoriteDishes = favoriteDishes;
     }
 
@@ -128,12 +140,13 @@ public class User {
         return "User{" +
                 "userId='" + userId + '\'' +
                 ", name='" + name + '\'' +
-                ", user_phone='" + user_phone + '\'' +
+                ", userPhone='" + userPhone + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", email='" + email + '\'' +
                 ", isSubscribed=" + isSubscribed +
-                ", modeOfRegister='" + modeOfRegister + '\'' +
+                ", mediumOfRegistration='" + mediumOfRegistration + '\'' +
                 ", isGuestUser=" + isGuestUser +
+                ", notificationToken='" + notificationToken + '\'' +
                 ", favoriteDishes=" + favoriteDishes +
                 '}';
     }

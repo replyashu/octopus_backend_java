@@ -73,6 +73,7 @@ public class DishController {
         if (favoriteDishes == null || favoriteDishes.size() == 0) {
             favoriteDishes = new HashSet<>();
         }
+
         List<Dish> dish = dishService.fetchDishes();
 
         System.out.println(dish.size());
