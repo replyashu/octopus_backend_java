@@ -5,6 +5,7 @@ import com.ashu.octopus.entity.User;
 import com.ashu.octopus.models.dish.MarkAsFavoriteRequest;
 import com.ashu.octopus.models.dish.RateDishRequest;
 import com.ashu.octopus.models.dish.RateDishResponse;
+import com.ashu.octopus.models.dish.RemoveFavoriteRequest;
 import com.ashu.octopus.service.dish.DishService;
 import com.ashu.octopus.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,8 +91,11 @@ public class DishController {
     }
 
     @GetMapping("/dish/get_favorite")
-    public ResponseEntity<Set<Dish>> getFavoriteDish(@RequestBody String userId) {
+    public ResponseEntity<Set<Dish>> getFavoriteDish(@RequestParam String userId) {
+        System.out.println(userId);
         User user = userService.findByUserId(userId);
+
+        System.out.println(user);
         Set<Dish> dishes = user.getFavoriteDishes();
 
         if (dishes == null || dishes.size() == 0) {
@@ -100,4 +104,16 @@ public class DishController {
         return new ResponseEntity<>(dishes, HttpStatus.OK);
     }
 
+    @PostMapping("/dish/remove_favorite/{dish}")
+    @ResponseBody
+    public Boolean removeFavoriteDish(@RequestBody RemoveFavoriteRequest removeFavoriteRequest) {
+        // Find user
+        User user = userService.findByUserId(removeFavoriteRequest.getUserUuid());
+        // Find dish
+        Set<Dish> dish = user.getFavoriteDishes();
+        dish.remove(removeFavoriteRequest.getDish());
+        user.setFavoriteDishes(dish);
+        userService.saveUser(user);
+        return true;
+    }
 }
