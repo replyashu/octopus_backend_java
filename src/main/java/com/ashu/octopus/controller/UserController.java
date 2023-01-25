@@ -9,7 +9,6 @@ import com.ashu.octopus.models.user.TokenRequest;
 import com.ashu.octopus.service.user.UserService;
 import com.ashu.octopus.utility.Constants;
 import com.ashu.octopus.utility.GoogleUserToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -125,6 +124,8 @@ public class UserController {
         try {
             userService.saveUser(user);
             System.out.println(user);
+
+            sendNotificationToSingleUser(user);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(false, HttpStatus.EXPECTATION_FAILED);
@@ -143,8 +144,8 @@ public class UserController {
                 note.setSubject("Welcome Onboard " + user.getName());
                 note.setContent("Excited to see you here " + user.getEmail());
                 Map<String, String> data = new LinkedHashMap<>();
-                data.put("key1", user.getMediumOfRegistration());
-                data.put("key2", "Value b");
+                data.put("key1", "1");
+                data.put("key2", user.getMediumOfRegistration());
                 data.put("key3", "Value c");
                 note.setData(data);
                 note.setImage(user.getImageUrl());
@@ -155,19 +156,37 @@ public class UserController {
         return true;
     }
 
+    public Boolean sendNotificationToSingleUser(User user) throws FirebaseMessagingException {
+        if (user.getNotificationToken() != null) {
+            System.out.println("notewa" + user.getNotificationToken());
+            Note note = new Note();
+            note.setSubject("Welcome Onboard " + user.getName());
+            note.setContent("Excited to see you here " + user.getEmail());
+            Map<String, String> data = new LinkedHashMap<>();
+            data.put("key1", "1");
+            data.put("key2", user.getMediumOfRegistration());
+            data.put("key3", "Value c");
+            note.setData(data);
+            note.setImage(user.getImageUrl());
+            sendNotificationToUser(note, user.getNotificationToken());
+        }
+
+        return true;
+    }
+
 //    public void sendNotification(List<String> tokens) throws FirebaseMessagingException {
 //       for (String token : tokens) {
 //           this.sendNotificationToUser(token);
 //       }
 //    }
-    public String sendNotificationToUser(Note note, String token) throws FirebaseMessagingException {
+    public void sendNotificationToUser(Note note, String token) throws FirebaseMessagingException {
 
         NoteWithToken noteWithToken = new NoteWithToken();
         noteWithToken.setToken(token);
         noteWithToken.setNote(note);
 
         System.out.println("notewa" + noteWithToken.toString());
-        return notificationController.sendNotification(noteWithToken);
+        notificationController.sendNotification(noteWithToken);
     }
 
 }
