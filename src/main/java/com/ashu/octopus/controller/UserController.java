@@ -139,31 +139,29 @@ public class UserController {
         for (User user: users) {
             if (user.getNotificationToken() != null) {
                 System.out.println("notewa" + user.getNotificationToken());
-                sendNotificationToUser(user.getNotificationToken());
+                Note note = new Note();
+                note.setSubject("Welcome Onboard " + user.getName());
+                note.setContent("Excited to see you here " + user.getEmail());
+                Map<String, String> data = new LinkedHashMap<>();
+                data.put("key1", user.getMediumOfRegistration());
+                data.put("key2", "Value b");
+                data.put("key3", "Value c");
+                note.setData(data);
+                note.setImage(user.getImageUrl());
+                sendNotificationToUser(note, user.getNotificationToken());
             }
         }
 
         return true;
     }
 
-    public void sendNotification(List<String> tokens) throws FirebaseMessagingException {
-       for (String token : tokens) {
-           this.sendNotificationToUser(token);
-       }
-    }
+//    public void sendNotification(List<String> tokens) throws FirebaseMessagingException {
+//       for (String token : tokens) {
+//           this.sendNotificationToUser(token);
+//       }
+//    }
+    public String sendNotificationToUser(Note note, String token) throws FirebaseMessagingException {
 
-    @PostMapping("/send-multi-notification")
-    @ResponseBody
-    public String sendNotificationToUser(String token) throws FirebaseMessagingException {
-        Note note = new Note();
-        note.setSubject("First Push Notification");
-        note.setContent("Random Content");
-        Map<String, String> data = new LinkedHashMap<>();
-        data.put("key1", "Value a");
-        data.put("key2", "Value b");
-        data.put("key3", "Value c");
-        note.setData(data);
-        note.setImage("https://somedomain.com/example.jpg");
         NoteWithToken noteWithToken = new NoteWithToken();
         noteWithToken.setToken(token);
         noteWithToken.setNote(note);
