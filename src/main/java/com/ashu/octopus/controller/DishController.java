@@ -104,16 +104,19 @@ public class DishController {
         return new ResponseEntity<>(dishes, HttpStatus.OK);
     }
 
-    @PostMapping("/dish/remove_favorite/{dish}")
+    @PostMapping("/dish/delete_favorite")
     @ResponseBody
-    public Boolean removeFavoriteDish(@RequestBody RemoveFavoriteRequest removeFavoriteRequest) {
+    public Dish removeFavoriteDish(@RequestBody RemoveFavoriteRequest removeFavoriteRequest) {
         // Find user
         User user = userService.findByUserId(removeFavoriteRequest.getUserUuid());
         // Find dish
         Set<Dish> dish = user.getFavoriteDishes();
-        dish.remove(removeFavoriteRequest.getDish());
+        Dish removedDish = dishService.findDishById(removeFavoriteRequest.getDishId());
+        dish.remove(removedDish);
         user.setFavoriteDishes(dish);
         userService.saveUser(user);
-        return true;
+
+        System.out.println(removedDish);
+        return removedDish;
     }
 }
