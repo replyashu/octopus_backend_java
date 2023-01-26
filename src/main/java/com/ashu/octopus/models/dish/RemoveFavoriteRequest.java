@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class RemoveFavoriteRequest {
     public String userUuid;
-    public Dish dish;
+    public Long dishId;
 }
