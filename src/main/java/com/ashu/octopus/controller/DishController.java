@@ -2,20 +2,19 @@ package com.ashu.octopus.controller;
 
 import com.ashu.octopus.entity.Dish;
 import com.ashu.octopus.entity.User;
-import com.ashu.octopus.models.dish.MarkAsFavoriteRequest;
-import com.ashu.octopus.models.dish.RateDishRequest;
-import com.ashu.octopus.models.dish.RateDishResponse;
-import com.ashu.octopus.models.dish.RemoveFavoriteRequest;
+import com.ashu.octopus.models.dish.*;
 import com.ashu.octopus.service.dish.DishService;
 import com.ashu.octopus.service.user.UserService;
+import com.ashu.octopus.service.worker.IImageService;
+import jakarta.servlet.annotation.MultipartConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 @RestController
 public class DishController {
@@ -25,6 +24,9 @@ public class DishController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private IImageService imageService;
 
     @GetMapping("/dish")
     public ResponseEntity<List<Dish>> fetchDishList() {
@@ -118,5 +120,22 @@ public class DishController {
 
         System.out.println(removedDish);
         return removedDish;
+    }
+
+    @PostMapping(value = "dish/add_new")
+    @ResponseBody
+    public Dish addNewDish(@RequestBody AddDishRequest addDishRequest) throws IOException {
+        byte[] decodedURLBytes = Base64.getDecoder().decode(addDishRequest.getDishUrl());
+//        imageService.save(decodedURLBytes, addDishRequest.getDishName());
+        Dish dish = new Dish();
+        User user = userService.findByUserId(addDishRequest.getUserId());
+        if (user != null) {
+            dish.setDishUser(user);
+        }
+        dish.setDishName(addDishRequest.getDishName());
+        dish.setDishDescription(addDishRequest.getDishDescription());
+        dish.setDishUrl(decodedURLBytes);
+        dishService.saveDish(dish);
+        return new Dish();
     }
 }

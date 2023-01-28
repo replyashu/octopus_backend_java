@@ -26,9 +26,9 @@ public class UserServiceImpl implements  UserService {
     public User findByUserId(String uuid) {
         System.out.println("User" + uuid + userRepository.findUserById(uuid));
         User user = userRepository.findUserById(uuid);
-        if (user == null) {
-            user = new User();
-        }
+//        if (user == null) {
+//            user = new User();
+//        }
         return user;
     }
 
