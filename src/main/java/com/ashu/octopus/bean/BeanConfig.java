@@ -1,11 +1,14 @@
 package com.ashu.octopus.bean;
 
+import com.ashu.octopus.service.worker.FirebaseImageService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -20,8 +23,9 @@ public class BeanConfig {
         FirebaseOptions firebaseOptions = FirebaseOptions
                 .builder()
                 .setCredentials(googleCredentials)
+                .setStorageBucket("octopus-375417.appspot.com")
                 .build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "Octopus");
+        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions);
         return FirebaseMessaging.getInstance(app);
     }
 }

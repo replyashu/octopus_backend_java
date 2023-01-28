@@ -2,7 +2,9 @@ package com.ashu.octopus.entity;
 
 import jakarta.persistence.*;
 import org.aspectj.weaver.patterns.Declare;
+import org.hibernate.type.descriptor.jdbc.LobTypeMappings;
 
+import java.sql.Blob;
 import java.util.Set;
 
 @Entity
@@ -15,7 +17,8 @@ public class Dish {
 
     private String dishName;
 
-    private String dishUrl;
+    @Lob
+    private byte[] dishUrl;
 
     private String dishType;
 
@@ -29,6 +32,9 @@ public class Dish {
 
     @ManyToOne
     private User user;
+
+    @OneToOne(mappedBy = "dish", cascade=CascadeType.ALL)
+    private User dishUser;
 
     public User getUser() {
         return user;
@@ -54,11 +60,11 @@ public class Dish {
         this.dishName = dishName;
     }
 
-    public String getDishUrl() {
+    public byte[] getDishUrl() {
         return dishUrl;
     }
 
-    public void setDishUrl(String dishUrl) {
+    public void setDishUrl(byte[] dishUrl) {
         this.dishUrl = dishUrl;
     }
 
@@ -102,7 +108,16 @@ public class Dish {
         isApproved = approved;
     }
 
-    public Dish(Long dishId, String dishName, String dishUrl, String dishType, String dishDescription, double dishRating, Long totalRatings, boolean isApproved, User users) {
+    public User getDishUser() {
+        return dishUser;
+    }
+
+    public void setDishUser(User dishUser) {
+        this.dishUser = dishUser;
+    }
+
+    public Dish(Long dishId, String dishName, byte[] dishUrl, String dishType, String dishDescription,
+                double dishRating, Long totalRatings, boolean isApproved, User user, User dishUser) {
         this.dishId = dishId;
         this.dishName = dishName;
         this.dishUrl = dishUrl;
@@ -111,7 +126,8 @@ public class Dish {
         this.dishRating = dishRating;
         this.totalRatings = totalRatings;
         this.isApproved = isApproved;
-        this.user = users;
+        this.user = user;
+        this.dishUser = dishUser;
     }
 
     public Dish() {
@@ -128,7 +144,8 @@ public class Dish {
                 ", dishRating=" + dishRating +
                 ", totalRatings=" + totalRatings +
                 ", isApproved=" + isApproved +
-                ", users=" + user +
+                ", user=" + user +
+                ", dishUser=" + dishUser +
                 '}';
     }
 }

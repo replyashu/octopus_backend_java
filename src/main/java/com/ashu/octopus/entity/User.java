@@ -36,6 +36,10 @@ public class User {
     )
     private Set<Dish> favoriteDishes;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "dish", referencedColumnName = "dishId")
+    public Dish dish;
+
     public String getUserId() {
         return userId;
     }
@@ -116,9 +120,17 @@ public class User {
         this.notificationToken = notificationToken;
     }
 
+    public Dish getDish() {
+        return dish;
+    }
+
+    public void setDish(Dish dish) {
+        this.dish = dish;
+    }
+
     public User(String userId, String name, String userPhone, String imageUrl, String email,
                 boolean isSubscribed, String mediumOfRegistration, boolean isGuestUser,
-                String notificationToken, Set<Dish> favoriteDishes) {
+                String notificationToken, Set<Dish> favoriteDishes, Dish dish) {
         this.userId = userId;
         this.name = name;
         this.userPhone = userPhone;
@@ -129,6 +141,7 @@ public class User {
         this.isGuestUser = isGuestUser;
         this.notificationToken = notificationToken;
         this.favoriteDishes = favoriteDishes;
+        this.dish = dish;
     }
 
     public User() {
@@ -148,6 +161,7 @@ public class User {
                 ", isGuestUser=" + isGuestUser +
                 ", notificationToken='" + notificationToken + '\'' +
                 ", favoriteDishes=" + favoriteDishes +
+                ", dish=" + dish +
                 '}';
     }
 }
