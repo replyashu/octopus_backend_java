@@ -44,14 +44,15 @@ public class DishServiceImpl implements DishService {
         return dishRepository.findByDishNameIgnoreCase(dishName);
     }
 
-    @Override
-    public List<Dish> fetchFavorites() {
-        return dishRepository.findAll();
-    }
+//    @Override
+//    public List<String> fetchFavorites(String userId) {
+//        return dishRepository.findDishesForUser(userId);
+//    }
 
 
 //    @Override
 //    public List<Dish> fetchDishList() {
 //        return dishRepository.findAll();
 //    }
+
 }

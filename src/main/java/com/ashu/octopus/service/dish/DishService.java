@@ -1,6 +1,7 @@
 package com.ashu.octopus.service.dish;
 
 import com.ashu.octopus.entity.Dish;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -18,7 +19,8 @@ public interface DishService {
 
     public Dish findDishByName(String dishName);
 
-    public List<Dish> fetchFavorites();
+//    public List<String> fetchFavorites(String userId);
+
 
 
 //    public List<Dish> fetchDishList();

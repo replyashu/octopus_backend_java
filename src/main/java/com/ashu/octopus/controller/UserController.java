@@ -19,10 +19,7 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -187,6 +184,13 @@ public class UserController {
 
         System.out.println("notewa" + noteWithToken.toString());
         notificationController.sendNotification(noteWithToken);
+    }
+
+    @GetMapping("/user/profile")
+    @ResponseBody
+    public ResponseEntity<User> fetchUserProfile(String userId) {
+        User user = userService.findByUserId(userId);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 }
