@@ -30,19 +30,7 @@ public class Dish {
 
     private boolean isApproved = false;
 
-    @ManyToOne
-    private User user;
-
-    @OneToOne(mappedBy = "dish", cascade=CascadeType.ALL)
-    private User dishUser;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    private String userId;
 
     public Long getDishId() {
         return dishId;
@@ -108,16 +96,16 @@ public class Dish {
         isApproved = approved;
     }
 
-    public User getDishUser() {
-        return dishUser;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setDishUser(User dishUser) {
-        this.dishUser = dishUser;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Dish(Long dishId, String dishName, byte[] dishUrl, String dishType, String dishDescription,
-                double dishRating, Long totalRatings, boolean isApproved, User user, User dishUser) {
+                double dishRating, Long totalRatings, boolean isApproved, String userId) {
         this.dishId = dishId;
         this.dishName = dishName;
         this.dishUrl = dishUrl;
@@ -126,8 +114,7 @@ public class Dish {
         this.dishRating = dishRating;
         this.totalRatings = totalRatings;
         this.isApproved = isApproved;
-        this.user = user;
-        this.dishUser = dishUser;
+        this.userId = userId;
     }
 
     public Dish() {
@@ -138,14 +125,11 @@ public class Dish {
         return "Dish{" +
                 "dishId=" + dishId +
                 ", dishName='" + dishName + '\'' +
-                ", dishUrl='" + dishUrl + '\'' +
                 ", dishType='" + dishType + '\'' +
                 ", dishDescription='" + dishDescription + '\'' +
                 ", dishRating=" + dishRating +
                 ", totalRatings=" + totalRatings +
                 ", isApproved=" + isApproved +
-                ", user=" + user +
-                ", dishUser=" + dishUser +
                 '}';
     }
 }

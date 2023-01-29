@@ -19,16 +19,17 @@ public class UserServiceImpl implements  UserService {
 
     @Override
     public User findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+        return userRepository.findByEmailUser(email);
     }
 
     @Override
     public User findByUserId(String uuid) {
-        System.out.println("User" + uuid + userRepository.findUserById(uuid));
-        User user = userRepository.findUserById(uuid);
-//        if (user == null) {
-//            user = new User();
-//        }
+        System.out.println(uuid);
+        User user = userRepository.findUser(uuid);
+        System.out.println(user + uuid);
+        if (user == null) {
+            user = new User();
+        }
         return user;
     }
 
