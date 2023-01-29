@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -71,7 +74,9 @@ public class DishController {
 
     @PostMapping("/dish/mark_favorite")
     public ResponseEntity<Boolean> markAsFavorite(@RequestBody MarkAsFavoriteRequest markAsFavoriteRequest) {
+        System.out.println(markAsFavoriteRequest.getUserUuid());
         User user = userService.findByUserId(markAsFavoriteRequest.getUserUuid());
+        System.out.println(user);
         Set<Dish> favoriteDishes = user.getFavoriteDishes();
         if (favoriteDishes == null || favoriteDishes.size() == 0) {
             favoriteDishes = new HashSet<>();
@@ -94,15 +99,20 @@ public class DishController {
 
     @GetMapping("/dish/get_favorite")
     public ResponseEntity<Set<Dish>> getFavoriteDish(@RequestParam String userId) {
-        System.out.println(userId);
-        User user = userService.findByUserId(userId);
+//        User user = userService.findByUserId(userId);
+//        System.out.println(user);
+////        List<String> dishIds = dishService.fetchFavorites(userId);
+////        System.out.println(dishIds);
 
+        User user = userService.findByUserId(userId);
         System.out.println(user);
         Set<Dish> dishes = user.getFavoriteDishes();
-
+//
         if (dishes == null || dishes.size() == 0) {
             dishes = new HashSet<>();
         }
+
+        System.out.println(dishes);
         return new ResponseEntity<>(dishes, HttpStatus.OK);
     }
 
@@ -126,16 +136,17 @@ public class DishController {
     @ResponseBody
     public Dish addNewDish(@RequestBody AddDishRequest addDishRequest) throws IOException {
         byte[] decodedURLBytes = Base64.getDecoder().decode(addDishRequest.getDishUrl());
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(decodedURLBytes));
+        System.out.println(img);
 //        imageService.save(decodedURLBytes, addDishRequest.getDishName());
         Dish dish = new Dish();
         User user = userService.findByUserId(addDishRequest.getUserId());
-        if (user != null) {
-            dish.setDishUser(user);
-        }
+        dish.setUserId(addDishRequest.getUserId());
         dish.setDishName(addDishRequest.getDishName());
         dish.setDishDescription(addDishRequest.getDishDescription());
         dish.setDishUrl(decodedURLBytes);
         dishService.saveDish(dish);
-        return new Dish();
+        System.out.println(dish);
+        return dish;
     }
 }
