@@ -3,6 +3,7 @@ package com.ashu.octopus.controller;
 import com.ashu.octopus.data.Note;
 import com.ashu.octopus.data.NoteWithToken;
 import com.ashu.octopus.entity.User;
+import com.ashu.octopus.models.user.EditProfileRequest;
 import com.ashu.octopus.models.user.RegisterUserRequest;
 import com.ashu.octopus.models.user.RegistrationResponse;
 import com.ashu.octopus.models.user.TokenRequest;
@@ -65,8 +66,6 @@ public class UserController {
         Gson gson = new Gson();
         GoogleUserToken userToken = gson.fromJson(payload, GoogleUserToken.class);
 
-        System.out.println("\n\nemail:" + userToken.getEmail());
-
         User user = new User();
         user.setEmail(userToken.getEmail());
         user.setName(userToken.getName());
@@ -87,7 +86,6 @@ public class UserController {
             status = HttpStatus.ALREADY_REPORTED;
         }
 
-        System.out.println(user);
         RegistrationResponse response = new RegistrationResponse();
         response.setUserUid(user.getUserId());
         response.setEmail(user.getEmail());
@@ -120,13 +118,39 @@ public class UserController {
 
         try {
             userService.saveUser(user);
-            System.out.println(user);
 
             sendNotificationToSingleUser(user);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(false, HttpStatus.EXPECTATION_FAILED);
         }
+    }
+
+    @PostMapping("/user/edit-profile")
+    public ResponseEntity<RegistrationResponse> editProfile(@RequestBody EditProfileRequest editProfileRequest) {
+        User user = userService.findByUserId(editProfileRequest.getUserId());
+
+        try {
+            byte[] decodedURLBytes = Base64.getDecoder().decode(editProfileRequest.getProfilePhoto());
+            user.setImageBytes(decodedURLBytes);
+        } catch (Exception e) {
+            user.setImageUrl(editProfileRequest.getProfilePhoto());
+        }
+
+        user.setName(editProfileRequest.getName());
+        user.setEmail(editProfileRequest.getEmail());
+        user.setUserPhone(editProfileRequest.getPhoneNumber());
+
+        userService.saveUser(user);
+
+        RegistrationResponse rp = new RegistrationResponse();
+        rp.setUserImage(user.getImageBytes());
+        rp.setName(user.getName());
+        rp.setEmail(user.getEmail());
+        rp.setProfilePhoto(user.getImageUrl());
+        rp.setPhoneNumber(user.getUserPhone());
+        System.out.println(rp);
+        return new ResponseEntity<>(rp, HttpStatus.OK);
     }
 
     @PostMapping("/user/notify")
@@ -136,7 +160,6 @@ public class UserController {
 
         for (User user: users) {
             if (user.getNotificationToken() != null) {
-                System.out.println("notewa" + user.getNotificationToken());
                 Note note = new Note();
                 note.setSubject("Welcome Onboard " + user.getName());
                 note.setContent("Excited to see you here " + user.getEmail());
@@ -155,7 +178,6 @@ public class UserController {
 
     public Boolean sendNotificationToSingleUser(User user) throws FirebaseMessagingException {
         if (user.getNotificationToken() != null) {
-            System.out.println("notewa" + user.getNotificationToken());
             Note note = new Note();
             note.setSubject("Welcome Onboard " + user.getName());
             note.setContent("Excited to see you here " + user.getEmail());
@@ -182,7 +204,6 @@ public class UserController {
         noteWithToken.setToken(token);
         noteWithToken.setNote(note);
 
-        System.out.println("notewa" + noteWithToken.toString());
         notificationController.sendNotification(noteWithToken);
     }
 
