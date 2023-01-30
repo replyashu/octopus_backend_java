@@ -2,6 +2,7 @@ package com.ashu.octopus.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Arrays;
 import java.util.Set;
 
 @Entity
@@ -16,6 +17,9 @@ public class User {
     private String userPhone;
 
     private String imageUrl;
+
+    @Lob
+    private byte[] imageBytes;
 
     private String email;
 
@@ -32,7 +36,6 @@ public class User {
             name = "favorite_dish",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "dishId")
-
     )
     private Set<Dish> favoriteDishes;
 
@@ -116,13 +119,22 @@ public class User {
         this.notificationToken = notificationToken;
     }
 
-    public User(String userId, String name, String userPhone, String imageUrl, String email,
-                boolean isSubscribed, String mediumOfRegistration, boolean isGuestUser,
-                String notificationToken, Set<Dish> favoriteDishes) {
+    public byte[] getImageBytes() {
+        return imageBytes;
+    }
+
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+    }
+
+    public User(String userId, String name, String userPhone, String imageUrl, byte[] imageBytes, String email,
+                boolean isSubscribed, String mediumOfRegistration, boolean isGuestUser, String notificationToken,
+                Set<Dish> favoriteDishes) {
         this.userId = userId;
         this.name = name;
         this.userPhone = userPhone;
         this.imageUrl = imageUrl;
+        this.imageBytes = imageBytes;
         this.email = email;
         this.isSubscribed = isSubscribed;
         this.mediumOfRegistration = mediumOfRegistration;
@@ -142,6 +154,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", userPhone='" + userPhone + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", imageBytes=" + Arrays.toString(imageBytes) +
                 ", email='" + email + '\'' +
                 ", isSubscribed=" + isSubscribed +
                 ", mediumOfRegistration='" + mediumOfRegistration + '\'' +
