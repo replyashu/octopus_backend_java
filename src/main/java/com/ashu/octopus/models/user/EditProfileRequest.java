@@ -2,6 +2,9 @@ package com.ashu.octopus.models.user;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 @Getter
 @Setter
@@ -10,7 +13,6 @@ public class EditProfileRequest {
     public String name;
     public String email;
     public String phoneNumber;
-    public String profilePhoto;
-    public byte[] userImage;
+    public MultipartFile profilePhoto;
     public String userId;
 }
