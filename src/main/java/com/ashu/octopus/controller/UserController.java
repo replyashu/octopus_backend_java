@@ -3,10 +3,7 @@ package com.ashu.octopus.controller;
 import com.ashu.octopus.data.Note;
 import com.ashu.octopus.data.NoteWithToken;
 import com.ashu.octopus.entity.User;
-import com.ashu.octopus.models.user.EditProfileRequest;
-import com.ashu.octopus.models.user.RegisterUserRequest;
-import com.ashu.octopus.models.user.RegistrationResponse;
-import com.ashu.octopus.models.user.TokenRequest;
+import com.ashu.octopus.models.user.*;
 import com.ashu.octopus.service.user.UserService;
 import com.ashu.octopus.utility.Constants;
 import com.ashu.octopus.utility.GoogleUserToken;
@@ -18,9 +15,9 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -126,15 +123,41 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user/edit-profile")
-    public ResponseEntity<RegistrationResponse> editProfile(@RequestBody EditProfileRequest editProfileRequest) {
+    @PostMapping(value = "/user/edit-profile",  consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<RegistrationResponse> editProfile(@RequestPart EditProfileRequest editProfileRequest) {
         User user = userService.findByUserId(editProfileRequest.getUserId());
 
         try {
-            byte[] decodedURLBytes = Base64.getDecoder().decode(editProfileRequest.getProfilePhoto());
-            user.setImageBytes(decodedURLBytes);
+//            byte[] decodedURLBytes = Base64.getDecoder().decode(editProfileRequest.getProfilePhoto());
+//            int width = 1;
+//            int height = 2;
+//
+//            DataBuffer buffer = new DataBufferByte(decodedURLBytes, decodedURLBytes.length);
+//
+//            //3 bytes per pixel: red, green, blue
+//            WritableRaster raster = Raster.createInterleavedRaster(buffer, width, height, 3 * width, 3, new int[] {0, 1, 2}, null);
+//            ColorModel cm = new ComponentColorModel(ColorModel.getRGBdefault().getColorSpace(), false, true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+//            BufferedImage image = new BufferedImage(cm, raster, true, null);
+//
+//            ImageIO.write(image, "png", new File("./src/main/resources/static/image.png"));
+//
+//            File file = new ClassPathResource("static/image.png").getFile();
+//
+//            System.out.println(file);
+
+            String uri = "https://api.publit.io/v1/files/create?&api_signature=a4bc52c5373653b0df6a73d6725a9e843bd74e9c&api_key=jfnhlanf6dD4VbbuSVnD&api_nonce=49917088&api_timestamp=1675966792&api_test=false";
+
+            UserPhoto userPhoto = new UserPhoto();
+            userPhoto.setPublicId(editProfileRequest.getUserId());
+            userPhoto.setFile(editProfileRequest.profilePhoto);
+
+            HttpEntity<UserPhoto> request = new HttpEntity<>(userPhoto);
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.exchange(uri, HttpMethod.POST, request, String.class);
+
+            user.setImageBytes(null);
         } catch (Exception e) {
-            user.setImageUrl(editProfileRequest.getProfilePhoto());
+            user.setImageUrl(user.getImageUrl());
         }
 
         user.setName(editProfileRequest.getName());
@@ -144,7 +167,6 @@ public class UserController {
         userService.saveUser(user);
 
         RegistrationResponse rp = new RegistrationResponse();
-        rp.setUserImage(user.getImageBytes());
         rp.setName(user.getName());
         rp.setEmail(user.getEmail());
         rp.setProfilePhoto(user.getImageUrl());
